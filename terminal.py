@@ -39,7 +39,7 @@ CONTACT SYSTEMS ADMINISTRATOR
 def main_menu():
   print ("YPSILON 14 CONTROL TERMINAL")
   time.sleep(1)
-  print ("""  > DIAGNOSTICS
+  print ("""> DIAGNOSTICS
 > SCHEDULE
 > CONTROLS
 > ROSTER
@@ -53,11 +53,11 @@ def main_menu():
     elif choice.lower() == 'diagnostics':
       option_diagnostics()
     elif choice.lower() == 'schedule':
-      menu1()
+      option_schedule()
     elif choice.lower() == 'controls':
-      menu2()
+      option_controls()
     elif choice.lower() == 'roster':
-      menu2()
+      option_roster()
     elif choice.lower() == 'comms':
       menu2()
     elif choice.lower() == 'throw rock':
@@ -122,7 +122,7 @@ def option_layout():
 ▓ HERACLES ▓ RESUPPLY ▓VERSION SOFTWARE 2.25B▓
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 """)
-  choice = input("PRESS RETURN")
+  choice = input("<PRESS RETURN>")
   if choice:
    option_diagnostics()
 
@@ -139,12 +139,177 @@ WARNING: MINESHAFT ELEVATOR LAST MAINTAINED 455 DAYS AGO
 WARNING: AIRFLOW 82%
 (SUBOPTIMAL: REPLACE FILTERS AND CHECK VENTS FOR BLOCKAGES)
 ALL SYSTEMS WITHIN ACCEPTABLE OPERATING CONDITIONS
-< BACK""")
-  choice = input("PRESS RETURN TO CONTINUE")
+""")
+  choice = input("<PRESS RETURN>")
   if choice:
     option_diagnostics()
 
+def option_schedule():
+  print ("\nSCHEDULE")
+  time.sleep(1)
+  print ("""2255-07-02 06:33 - IMV GRASSHOPPER    - RESUPPLY - DOCKING BAY 2 - DOCK
+2255-06-04 08:34 - RSV THE HERACLES   - RESEARCH - DOCKING BAY 1 - DOCK
+2255-06-02 12:23 - CTV HORN OV PLENTY - RESUPPLY - DOCKING BAY 2 - DEPART
+2255-06-01 16:04 - CTV HORN OV PLENTY - RESUPPLY - DOCKING BAY 2 - DOCK
+2255-05-02 08:32 - MV VASQUEZ XV      - PICKUP   - DOCKING BAY 1 - DEPART
+2255-05-01 06:02 - MV VASQUEZ XV      - PICKUP   - DOCKING BAY 1 - DOCK
+2255-04-02 13:02 - CTV HORN OV PLENTY - RESUPPLY - DOCKING BAY 2 - DEPART
+2255-04-01 15:54 - CTV HORN OV PLENTY - RESUPPLY - DOCKING BAY 2 - DOCK
+2255-03-02 08:33 - MV VAZQUEZ XV      - PICKUP   - DOCKING BAY 1 - DEPART
+2255-03-01 06:04 - MV VAZQUEZ XV      - PICKUP   - DOCKING BAY 1 - DOCK
+""")
+  choice = input("<PRESS RETURN>")
+  if choice:
+    main_menu()
 
+def option_roster():
+  print ("\nROSTER")
+  time.sleep(1)
+  print ("""01. VERHOEVEN, SONYA     - OVERSEER
+02. SINGH, ASHRAF        - BREAKER
+03. DE BEERS, DANA       - HEAD DRILLER
+04. HUIZINGA, JEROME     - ASST. DRILLER
+05. TOBIN, ROSA          - MINING ENGINEER
+06. MIKKELSEN, MICHAEL   - MINING ENGINEER
+07. KANTARO, KENJI       - LOADER
+08. OBOWE, MORGAN        - LOADER
+09. KENBISHI, RIE        - PUTTER
+10. VACANT
+""")
+  choice = input("<PRESS RETURN>")
+  if choice:
+    main_menu()
+
+def option_controls(): 
+  print ("\nCONTROLS")
+  time.sleep(1)
+  print ("""> AIRLOCKS
+> SHOWERS
+> SYSTEM [A]
+< BACK""")
+  menu_completer = WordCompleter(['AIRLOCKS', 'SHOWERS', 'SYSTEM [ADMIN]', 'BACK'], ignore_case=True)
+  while True:
+    choice = prompt('>>> ', completer=menu_completer)
+    if choice.lower() == 'exit':
+      break
+    elif choice.lower() == 'airlocks':
+      option_airlocks()
+    elif choice.lower() == 'showers':
+      option_showers()
+    elif choice.lower() == 'system':
+      option_system()
+    elif choice.lower() == 'back':
+      main_menu()
+    else:
+      print ("INVALID COMMAND")
+      time.sleep(1)
+      option_controls()
+
+def option_airlocks():
+  global config
+  print ("\nTOGGLE WHICH AIRLOCK?")
+  time.sleep(1)
+  if config["dock_1_locked"] == True:
+    print ("DOCKING BAY 1 [> LOCKED]")
+  else:
+    print ("DOCKING BAY 1 [> UNLOCKED]")
+  if config["dock_2_locked"] == True:
+    print ("DOCKING BAY 2 [> LOCKED]")
+  else:
+    print ("DOCKING BAY 2 [> UNLOCKED]")
+  if config["mineshaft_locked"] == True:
+    print ("MINESHAFT [> LOCKED]")
+  else:
+    print ("MINESHAFT [> UNLOCKED]")
+  print ("< BACK")
+  menu_completer = WordCompleter(['DOCKING BAY 1', 'DOCKING BAY 2', 'MINESHAFT', 'BACK'], ignore_case=True)
+  while True:
+    choice = prompt('>>> ', completer=menu_completer)
+    if choice.lower() == 'exit':
+      break
+    if choice.lower() == 'docking bay 1':
+      if config["dock_1_locked"] == False:
+        print ("INITIALIZING BAY 1 LOCK.\nNOTE - DOOR MUST BE MANUALLY CLOSED FIRST.")
+        time.sleep(3)
+        print ("\nDOCKING BAY 1 LOCKED")
+        time.sleep(1)
+        config["dock_1_locked"] = True
+        option_airlocks()
+      else:
+        print ("UNLOCKING BAY 1")
+        time.sleep(3)
+        print ("\nDOCKING BAY 1 UNLOCKED")
+        time.sleep(1)
+        config["dock_1_locked"] = False
+        option_airlocks()
+    if choice.lower() == 'docking bay 2':
+      if config["dock_2_locked"] == False:
+        print ("INITIALIZING BAY 2 LOCK.\nNOTE - DOOR MUST BE MANUALLY CLOSED FIRST.")
+        time.sleep(3)
+        print ("\nDOCKING BAY 2 LOCKED")
+        time.sleep(1)
+        config["dock_2_locked"] = True
+        option_airlocks()
+      else:
+        print ("UNLOCKING BAY 2 AIRLOCK")
+        time.sleep(3)
+        print ("\nDOCKING BAY 2 UNLOCKED")
+        time.sleep(1)
+        config["dock_2_locked"] = False
+        option_airlocks()
+    if choice.lower() == 'mineshaft':
+      if config["mineshaft_locked"] == False:
+        print ("INITIALIZING MINESHAFT LOCK.\nNOTE - DOOR MUST BE MANUALLY CLOSED FIRST.")
+        time.sleep(3)
+        print ("\nMINESHAFT AIRLOCK LOCKED")
+        time.sleep(1)
+        config["mineshaft_locked"] = True
+        option_airlocks()
+      else:
+        print ("UNLOCKING MINESHAFT AIRLOCK")
+        time.sleep(3)
+        print ("MINESHAFT AIRLOCK UNLOCKED")
+        time.sleep(1)
+        config["mineshaft_locked"] = False
+        option_airlocks()
+    elif choice.lower() == 'back':
+      main_menu()
+    else:
+      print ("INVALID COMMAND")
+      time.sleep(1)
+      option_airlocks()
+
+def option_showers():
+  global config
+  print ("\nTOGGLE WHICH SHOWER?")
+  if GlobalVariables["shower_1_on"] == True:
+    print ("SHOWER 1 [> ON]")
+  else:
+    print ("SHOWER 1 [> OFF]")
+  if GlobalVariables["shower_2_on"] == True:
+    print ("SHOWER 2 [> ON]")
+  else:
+    print ("SHOWER 2 [> OFF]")
+  if GlobalVariables["shower_3_on"] == True:
+    print ("SHOWER 3 [> ON]")
+  else:
+    print ("SHOWER 3 [> OFF]")
+  if GlobalVariables["shower_4_on"] == True:
+    print ("SHOWER 4 [> ON]")
+  else:
+    print ("SHOWER 4 [> OFF]")
+  if GlobalVariables["shower_5_on"] == True:
+    print ("SHOWER 5 [> ON]")
+  else:
+    print ("SHOWER 5 [> OFF]")
+  print ("> ALL")
+  print ("< BACK")
+  menu_completer = WordCompleter(['ALL', 'BACK'], ignore_case=True)
+  while True:
+    choice = prompt('>>> ', completer=menu_completer)
+    if choice.lower() == 'exit':
+      break
+    if choice.lower() == 'docking bay 1':
 
 if __name__ == '__main__':
   bootup()
