@@ -1,15 +1,28 @@
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
+from enum import Enum
 import time
+import json
+import os
 
-config = {
+# shower state class to account for broken
+class ShowerState(Enum):
+    ON = "on"
+    OFF = "off"
+    BROKEN = "broken"
+
+# default config values
+default_config = {
   "life_support_on": True,
   "keycard_supplied": False,
-  "shower_1_on": False,
-  "shower_2_on": False,
-  "shower_3_on": False,
-  "shower_4_on": False,
-  "shower_5_on": False,
+  "keycard_pin": "2122",  # Alien takes place this year ;)
+  "showers": {
+    1: ShowerState.OFF,
+    2: ShowerState.OFF,
+    3: ShowerState.OFF,
+    4: ShowerState.OFF,
+    5: ShowerState.BROKEN  
+  },
   "dock_1_locked": True,
   "dock_1_ship": "Heracles",
   "dock_2_locked": False,
@@ -18,6 +31,55 @@ config = {
 }
 
 
+
+# non menu functions here
+
+# shower toggle
+def shower_toggle(num):
+  global config
+  if config["showers"][num] == ShowerState.ON:
+    print(f"TURNING OFF SHOWER {num}")
+    config["showers"][num] = ShowerState.OFF
+    time.sleep(2)
+  elif config["showers"][num] == ShowerState.OFF:
+    print(f"TURNING SHOWER {num} ON")
+    config["showers"][num] = ShowerState.ON
+    time.sleep(2)
+  elif config["showers"][num] == ShowerState.BROKEN:
+    time.sleep(1)
+    print(...)
+    time.sleep(12)
+    print("ERROR: NOTIFICATION LEVEL")
+    print(f"SHOWER {num} NOT RESPONDING")
+    time.sleep(1)
+        
+
+# json saving
+def save_config_to_file(config, filename):
+  with open(filename, "w") as file:
+    json.dump(config, file, indent=4)
+
+# usage:
+# save_config_to_file(config, "config.json")
+
+# json loading
+
+def load_config_from_file(filename, default_config):
+  if os.path.exists(filename):
+    with open(filename, "r") as file:
+      config = json.load(file)
+      # Convert shower states back to enum
+      for key, value in config["showers"].items():
+          config["showers"][key] = ShowerState(value)
+      return config
+  else:
+    return default_config
+
+# load config if it exists, otherwise use default values supplied above.
+config = load_config_from_file("config.json", default_config)
+
+
+# Menu functions start here
 def bootup():
   print (r"""__   __        _ _               _____ _        _   _             
 \ \ / /       (_) |             /  ___| |      | | (_)            
@@ -273,7 +335,7 @@ def option_airlocks():
         config["mineshaft_locked"] = False
         option_airlocks()
     elif choice.lower() == 'back':
-      main_menu()
+      option_controls()
     else:
       print ("INVALID COMMAND")
       time.sleep(1)
@@ -281,35 +343,54 @@ def option_airlocks():
 
 def option_showers():
   global config
-  print ("\nTOGGLE WHICH SHOWER?")
-  if GlobalVariables["shower_1_on"] == True:
-    print ("SHOWER 1 [> ON]")
-  else:
-    print ("SHOWER 1 [> OFF]")
-  if GlobalVariables["shower_2_on"] == True:
-    print ("SHOWER 2 [> ON]")
-  else:
-    print ("SHOWER 2 [> OFF]")
-  if GlobalVariables["shower_3_on"] == True:
-    print ("SHOWER 3 [> ON]")
-  else:
-    print ("SHOWER 3 [> OFF]")
-  if GlobalVariables["shower_4_on"] == True:
-    print ("SHOWER 4 [> ON]")
-  else:
-    print ("SHOWER 4 [> OFF]")
-  if GlobalVariables["shower_5_on"] == True:
-    print ("SHOWER 5 [> ON]")
-  else:
-    print ("SHOWER 5 [> OFF]")
-  print ("> ALL")
+  print ("\nTOGGLE WHICH SHOWER NUMBER?")
+  for shower_id, state in config["showers"].items():
+    if state == ShowerState.ON:
+      print(f"SHOWER {shower_id} [> ON ]")
+    elif state == ShowerState.OFF:
+      print(f"SHOWER {shower_id} [> OFF]")
+    elif state == ShowerState.BROKEN:
+      print(f"SHOWER {shower_id} [ERROR]")
   print ("< BACK")
-  menu_completer = WordCompleter(['ALL', 'BACK'], ignore_case=True)
+  menu_completer = WordCompleter(['BACK'], ignore_case=True)
   while True:
     choice = prompt('>>> ', completer=menu_completer)
     if choice.lower() == 'exit':
-      break
-    if choice.lower() == 'docking bay 1':
+      main_menu()
+    if choice in ["1","2","3","4","5"]:
+      shower_toggle(int(choice))
+      option_showers()
+    elif choice.lower() == 'back':
+      option_controls()
+    else:
+      print ("INVALID COMMAND")
+      time.sleep(1)
+      option_showers()
+
+def option_system():
+  global config
+  if config["keycard_supplied"] == True:
+   option_system_a()
+  else:
+   print ("SYSTEM")
+  time.sleep(1)
+  print("PLEASE INSERT ADMINISTRATOR KEYCARD\n")
+  print("READY TO READ KEYCARD?")
+  choice = input("[Y/N]")
+  if choice.lower() == "y":
+    time.sleep(1)
+    print("ACCESSING KEYCARD SLOT\n")
+    time.sleep(1)
+    pin_input = input("KEYCARD PIN ID [XXXX]:")
+    if pin_input == config["keycard_pin"]:
+    config["keycard_supplied"] = True
+    option_system_a()
+  elif choice.lower() == "n":
+    option_controls()
+  else:
+    print ("PLEASE INDICATE YES OR NO")
+    time.sleep(1)
+    option_system()
 
 if __name__ == '__main__':
   bootup()
