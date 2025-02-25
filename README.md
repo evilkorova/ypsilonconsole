@@ -18,7 +18,9 @@ This is my version I made for my game, so there are some changes and departures 
 
 Links:
 Based on: https://www.traaa.sh/the-ypsilon-14-terminal
+
 Original: https://github.com/tempest-creator/ypsilonconsole
+
 Cool Retro Term to complete the look:  https://github.com/Swordfish90/cool-retro-term
 
 # Instructions
@@ -37,9 +39,14 @@ The hacker shell can be accessed only from the main (top) menu. I have it as a c
 The shell has no levels and you can tab through the commands so the user doesn't have to memorize what options are available.
 
 REGISTER BAY 1 SHIP
+
 REGISTER BAY 2 SHIP
+
 CONTROLLER SHOWER OVERCLOCK
+
 CONTROLLER SHOWER REPAIR
+
 SYSTEM LIFE SUPPORT ON/OFF
+
 SYSTEM SELF-DESTRUCT
 
