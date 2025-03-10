@@ -24,9 +24,9 @@ default_config = {
     5: ShowerState.BROKEN  
   },
   "dock_1_locked": True,
-  "dock_1_ship": "Heracles",
+  "dock_1_ship": "HERACLES",
   "dock_2_locked": False,
-  "dock_2_ship": "Grasshopper",
+  "dock_2_ship": "IMV GRASSHOPPER",
   "mineshaft_locked": False
 }
 
@@ -111,6 +111,7 @@ def main_menu():
   while True:
     choice = prompt('>>> ', completer=menu_completer)
     if choice.lower() == 'exit':
+      save_config_to_file(config, "config.json")
       quit()
     elif choice.lower() == 'diagnostics':
       option_diagnostics()
@@ -121,11 +122,13 @@ def main_menu():
     elif choice.lower() == 'roster':
       option_roster()
     elif choice.lower() == 'comms':
-      menu2()
+      option_comms()
     elif choice.lower() == 'throw rock':
       print ("\nYou decided to throw another rock, as if the first " 
       "rock thrown did much damage. The rock flew well over the "
       "orcs head. You missed. \n\nYou died!")
+    elif choice.lower() == 'run init 1337':
+      hacker_shell()
     else:
       print ("INVALID COMMAND")
       time.sleep(1)
@@ -240,6 +243,7 @@ def option_roster():
 """)
   choice = input("<PRESS RETURN>")
   if choice:
+    time.sleep(1)
     main_menu()
 
 def option_controls(): 
@@ -247,9 +251,9 @@ def option_controls():
   time.sleep(1)
   print ("""> AIRLOCKS
 > SHOWERS
-> SYSTEM [A]
+> SYSTEM [ADMIN]
 < BACK""")
-  menu_completer = WordCompleter(['AIRLOCKS', 'SHOWERS', 'SYSTEM [ADMIN]', 'BACK'], ignore_case=True)
+  menu_completer = WordCompleter(['AIRLOCKS', 'SHOWERS', 'SYSTEM', 'BACK'], ignore_case=True)
   while True:
     choice = prompt('>>> ', completer=menu_completer)
     if choice.lower() == 'exit':
@@ -383,14 +387,202 @@ def option_system():
     time.sleep(1)
     pin_input = input("KEYCARD PIN ID [XXXX]:")
     if pin_input == config["keycard_pin"]:
-    config["keycard_supplied"] = True
-    option_system_a()
+      config["keycard_supplied"] = True
+      time.sleep(1)
+      print ("[ACCESS GRANTED. WELCOME, SONYA.]")
+      time.sleep(2)
+      option_system_a()
+    else:
+      print("AUTHORIZATION DENIED")
+      time.sleep(3)
+      option_controls()
   elif choice.lower() == "n":
     option_controls()
   else:
     print ("PLEASE INDICATE YES OR NO")
     time.sleep(1)
     option_system()
+
+def option_system_a():
+  print ("""SYSTEM
+> LIFE SUPPORT
+> SCUTTLE
+< BACK""")
+  menu_completer = WordCompleter(['LIFE SUPPORT', 'SCUTTLE', 'BACK'], ignore_case=True)
+  while True:
+    choice = prompt('>>> ', completer=menu_completer)
+    if choice.lower() == 'life support':
+      option_lifesupport()
+    elif choice.lower() == 'scuttle':
+      option_scuttle()
+    elif choice.lower() == 'back':
+      option_controls()
+    else:
+      print ("INVALID COMMAND")
+      time.sleep(1)
+      option_system_a()
+
+def option_lifesupport():
+  global config
+  print ("\nLIFE SUPPORT")
+  time.sleep(1)
+  if config["life_support_on"] == True:
+    print ("LIFE SUPPORT [> ON]")
+    print("\nWARNING:\nENSURE ALL PERSONNEL ARE IN VACCSUITS BEFORE TURNING OFF LIFE SUPPORT")
+    print("\nTURN LIFE SUPPORT OFF?")
+    choice = input("[Y/N]")
+    if choice.lower() == "y":
+      config["life_support_on"] = False
+      time.sleep(1)
+      print("DISABLING LIFE SUPPORT\n")
+      time.sleep(1)
+      print("WARNING: LIFE SUPPORT DISABLED")
+      while True:
+        ret_choice = input("[RETURN]")
+        if ret_choice == "":
+          time.sleep(1)
+          option_system_a()
+    elif choice.lower() == "n":
+      time.sleep(1)
+      option_system_a()
+    else:
+      print ("PLEASE INDICATE YES OR NO")
+      time.sleep(1)
+      option_lifesupport()
+  else:
+    print ("LIFE SUPPORT [> OFF]")
+    print("\nTURN LIFE SUPPORT ON?")
+    choice = input("[Y/N]")
+    if choice.lower() == "y":
+      config["life_support_on"] = True
+      time.sleep(1)
+      print("ENABLING LIFE SUPPORT\n")
+      time.sleep(1)
+      print("LIFE SUPPORT ENABLED")
+      print("WARNING: ENSURE ALL PERSONNEL REMAIN IN VACCSUITS FOR 5 MINUTES\n")
+      while True:
+        ret_choice = input("[RETURN]")
+        if ret_choice == "":
+          time.sleep(1)
+          option_system_a()
+    elif choice.lower() == "n":
+      time.sleep(1)
+      option_system_a()
+    else:
+      print ("PLEASE INDICATE YES OR NO")
+      time.sleep(1)
+      option_lifesupport()
+
+def option_scuttle():
+  print ("SCUTTLE")
+  time.sleep(1)
+  print("[WARNING] THIS WILL INITIATE A 10-MINUTE STATION SELF-DESTRUCT SEQUENCE")
+  print("\nINITIATE SELF DESTRUCT")
+  choice = input("[Y/N]")
+  if choice.lower() == "y":
+    time.sleep(1)
+    print("[WARNING] SEQUENCE IS IRREVERSIBLE AFTER 5 MINUTES\n")
+    time.sleep(1)
+    choice = input("CONTINUE? [Y/N]")
+    if choice.lower() == "y":
+      time.sleep(1)
+      print('TYPE "SCUTTLE" TO CONFIRM:')
+      choice = input(" >>>")
+      if choice.lower() == "scuttle":
+        time.sleep(2)
+        print ("STATION WILL SELF-DESTRUCT IN 10 MINUTES.\n")
+        time.sleep(2)
+        print ("IMMEDIATE EVACUATION SUGGESTED.\n")
+        start_time = time.time()
+        abort_choice = None
+        while time.time() - start_time < 300:
+          print('TYPE "ABORT" TO CANCEL')
+          abort_choice = input(" >>>")
+          if abort_choice.lower() == "abort":
+            break
+        if abort_choice.lower() == "abort":
+            print("ABORTING")
+            time.sleep(2)
+            option_system_a()
+        print("[WARNING] SELF-DESCTRUCT IN 5 MINUTES\n")
+        time.sleep(1)
+        print("[WARNING] SEQUENCE IS NO LONGER REVERSIBLE\n")
+        time.sleep(4)
+        print("HAVE A NICE DAY :)")
+        time.sleep(295)
+        print("(boom)")
+        while True:
+          pass
+      else:
+        print("CANCELING SELF DESTRUCT\n")
+        time.sleep(3)
+        option_system_a()
+  elif choice.lower() == "n":
+    print("ABORTING")
+    time.sleep(2)
+    option_system_a()
+  else:
+    print ("PLEASE INDICATE YES OR NO")
+    time.sleep(1)
+    option_scuttle()
+
+def option_comms():
+  global config
+  ship_1_name = config["dock_1_ship"]
+  ship_2_name = config["dock_2_ship"]
+  print("COMMS")
+  time.sleep(1)
+  print("SCANNING FOR NEARBY SHIPS...\n")
+  time.sleep(3)
+  print("SHIPS IN RANGE BELOW. TYPE NAME TO HAIL\n")
+  print(ship_1_name)
+  print(ship_2_name)
+  print("\n< BACK")
+  menu_completer = WordCompleter([ship_1_name, ship_2_name, 'BACK'], ignore_case=True)
+  while True:
+    choice = prompt('>>> ', completer=menu_completer)
+    if choice.lower() == ship_1_name.lower():
+      print(f"HAILING {ship_1_name}")
+      time.sleep(1)
+      print(".")
+      time.sleep(1)
+      print(".")
+      time.sleep(1)
+      print(".")
+      print("COMMUNICATION CHANNEL OPEN")
+      print("PRESS RETURN TO END CALL")
+      while True:
+        ret_choice = input("[RETURN]")
+        if ret_choice == "":
+          time.sleep(1)
+          main_menu()
+    elif choice.lower() == ship_2_name.lower():
+      print(f"HAILING {ship_2_name}")
+      time.sleep(1)
+      print(".")
+      time.sleep(1)
+      print(".")
+      time.sleep(1)
+      print(".")
+      time.sleep(1)
+      print(".")
+      time.sleep(1)
+      print(".")
+      time.sleep(1)
+      print(".")
+      time.sleep(2)
+      print("NO ANSWER")
+      while True:
+        ret_choice = input("[RETURN]")
+        if ret_choice == "":
+          time.sleep(1)
+          main_menu()
+    elif choice.lower() == 'back':
+      main_menu()
+    else:
+      print ("INVALID COMMAND")
+      time.sleep(1)
+      option_comms()
 
 if __name__ == '__main__':
   bootup()
