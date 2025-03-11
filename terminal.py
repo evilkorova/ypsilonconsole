@@ -89,6 +89,7 @@ config = load_config_from_file("config.json", default_config)
 
 # Menu functions start here
 def bootup():
+  time.sleep(1)
   print (r"""__   __        _ _               _____ _        _   _             
 \ \ / /       (_) |             /  ___| |      | | (_)            
  \ V / __  ___ _| | ___  _ __   \ `--.| |_ __ _| |_ _  ___  _ __  
@@ -103,7 +104,9 @@ PROGRAM OPERATION GROUP SOFTWARE (P.O.G.S.)
 WARNING - LICENSE EXPIRED
 CONTACT SYSTEMS ADMINISTRATOR
 ----------
+BOOTING...
 """)
+  time.sleep(3)
   main_menu()
     
 def main_menu():
