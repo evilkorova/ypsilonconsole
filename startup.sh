@@ -1,0 +1,1 @@
+QT_SCALE_FACTOR=0.5 cool-retro-term

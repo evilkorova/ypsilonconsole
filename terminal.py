@@ -48,7 +48,7 @@ def shower_toggle(num):
     time.sleep(2)
   elif config["showers"][num] == ShowerState.BROKEN:
     time.sleep(1)
-    print(...)
+    print("...")
     time.sleep(12)
     print("ERROR: NOTIFICATION LEVEL")
     print(f"SHOWER {num} NOT RESPONDING")
@@ -82,10 +82,14 @@ def load_config_from_file(filename, default_config):
   else:
     return default_config
 
+# def paginate_output(text_blob, page_size=10):
+#   lines = text_blob.splitlines()
+#   for i in range(0, len(lines), page_size):
+#     print("\n".join(lines[i:i+page_size]))
+#     input("\n[RETURN]")
 
 # load config if it exists, otherwise use default values supplied above.
 config = load_config_from_file("config.json", default_config)
-
 
 # Menu functions start here
 def bootup():
@@ -97,7 +101,10 @@ def bootup():
   | | |_) \__ \ | | (_) | | | | /\__/ / || (_| | |_| | (_) | | | |
   \_/ .__/|___/_|_|\___/|_| |_| \____/ \__\__,_|\__|_|\___/|_| |_|
     | |                                                           
-    |_|              
+    |_|        
+""")
+  time.sleep(2)
+  print (r"""      
 FLEET COMMODORE SYSTEMS © 2246 - GUILD LICENSE
 PROGRAM OPERATION GROUP SOFTWARE (P.O.G.S.)
 ----------
@@ -172,7 +179,7 @@ def option_diagnostics():
 def option_layout():
   print ("\nGENERATING LAYOUT")
   time.sleep(1)
-  print (r"""▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+  layout = r"""▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ▓__   _____  ___ ___ _    ___  _  _   _ _ _  ▓
 ▓\ \ / / _ \/ __|_ _| |  / _ \| \| | / | | | ▓
 ▓ \ V /|  _/\__ \| || |_| (_) | .` | | |_  _|▓
@@ -199,10 +206,15 @@ def option_layout():
 ▓  DOCK 1  ▓  DOCK 2  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ▓ HERACLES ▓ RESUPPLY ▓VERSION SOFTWARE 2.25B▓
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-""")
-  choice = input("<PRESS RETURN>")
-  if choice:
-   option_diagnostics()
+"""
+# can uncomment the below to paginate layout (and def above)
+#  paginate_output(layout)
+  print(layout)
+  while True:
+    ret_choice = input("<RETURN>")
+    if ret_choice == "":
+      time.sleep(1)
+      option_diagnostics()
 
 def option_status():
   print ("\nSTATUS")
@@ -218,15 +230,20 @@ WARNING: AIRFLOW 82%
 (SUBOPTIMAL: REPLACE FILTERS AND CHECK VENTS FOR BLOCKAGES)
 ALL SYSTEMS WITHIN ACCEPTABLE OPERATING CONDITIONS
 """)
-  choice = input("<PRESS RETURN>")
-  if choice:
-    option_diagnostics()
+  while True:
+    ret_choice = input("<RETURN>")
+    if ret_choice == "":
+      time.sleep(1)
+      option_diagnostics()
 
 def option_schedule():
+  global config
+  ship_1_name = config["dock_1_ship"]
+  ship_2_name = config["dock_2_ship"]
   print ("\nSCHEDULE")
   time.sleep(1)
-  print ("""2255-07-02 06:33 - IMV GRASSHOPPER    - RESUPPLY - DOCKING BAY 2 - DOCK
-2255-06-04 08:34 - RSV THE HERACLES   - RESEARCH - DOCKING BAY 1 - DOCK
+  print (f"""2255-07-02 06:33 - {ship_1_name}    - RESUPPLY - DOCKING BAY 2 - DOCK
+2255-06-04 08:34 - {ship_2_name}    - RESEARCH - DOCKING BAY 1 - DOCK
 2255-06-02 12:23 - CTV HORN OV PLENTY - RESUPPLY - DOCKING BAY 2 - DEPART
 2255-06-01 16:04 - CTV HORN OV PLENTY - RESUPPLY - DOCKING BAY 2 - DOCK
 2255-05-02 08:32 - MV VASQUEZ XV      - PICKUP   - DOCKING BAY 1 - DEPART
@@ -236,9 +253,11 @@ def option_schedule():
 2255-03-02 08:33 - MV VAZQUEZ XV      - PICKUP   - DOCKING BAY 1 - DEPART
 2255-03-01 06:04 - MV VAZQUEZ XV      - PICKUP   - DOCKING BAY 1 - DOCK
 """)
-  choice = input("<PRESS RETURN>")
-  if choice:
-    main_menu()
+  while True:
+    ret_choice = input("<RETURN>")
+    if ret_choice == "":
+      time.sleep(1)
+      main_menu()
 
 def option_roster():
   print ("\nROSTER")
@@ -254,10 +273,11 @@ def option_roster():
 09. KENBISHI, RIE        - PUTTER
 10. VACANT
 """)
-  choice = input("<PRESS RETURN>")
-  if choice:
-    time.sleep(1)
-    main_menu()
+  while True:
+    ret_choice = input("<RETURN>")
+    if ret_choice == "":
+      time.sleep(1)
+      main_menu()
 
 def option_controls(): 
   print ("\nCONTROLS")
@@ -361,6 +381,7 @@ def option_airlocks():
 def option_showers():
   global config
   print ("\nTOGGLE WHICH SHOWER NUMBER?")
+  time.sleep(1)
   for shower_id, state in config["showers"].items():
     if state == ShowerState.ON:
       print(f"SHOWER {shower_id} [> ON ]")
@@ -387,6 +408,8 @@ def option_showers():
 def option_system():
   global config
   if config["keycard_supplied"] == True:
+   time.sleep(1)
+   print("[ACCESS GRANTED]")
    option_system_a()
   else:
    print ("SYSTEM")
@@ -437,7 +460,6 @@ def option_system_a():
 
 def option_lifesupport():
   global config
-  print ("\nLIFE SUPPORT")
   time.sleep(1)
   if config["life_support_on"] == True:
     print ("LIFE SUPPORT [> ON]")
@@ -451,7 +473,7 @@ def option_lifesupport():
       time.sleep(1)
       print("WARNING: LIFE SUPPORT DISABLED")
       while True:
-        ret_choice = input("[RETURN]")
+        ret_choice = input("<RETURN>")
         if ret_choice == "":
           time.sleep(1)
           option_system_a()
@@ -474,7 +496,7 @@ def option_lifesupport():
       print("LIFE SUPPORT ENABLED")
       print("WARNING: ENSURE ALL PERSONNEL REMAIN IN VACCSUITS FOR 5 MINUTES\n")
       while True:
-        ret_choice = input("[RETURN]")
+        ret_choice = input("<RETURN>")
         if ret_choice == "":
           time.sleep(1)
           option_system_a()
@@ -554,8 +576,8 @@ def option_comms():
   menu_completer = WordCompleter([ship_1_name, ship_2_name, 'BACK'], ignore_case=True)
   while True:
     choice = prompt('>>> ', completer=menu_completer)
-    if choice.lower() == ship_1_name.lower():
-      print(f"HAILING {ship_1_name}")
+    if choice.lower() == ship_2_name.lower():
+      print(f"HAILING {ship_2_name}")
       time.sleep(1)
       print(".")
       time.sleep(1)
@@ -569,8 +591,8 @@ def option_comms():
         if ret_choice == "":
           time.sleep(1)
           main_menu()
-    elif choice.lower() == ship_2_name.lower():
-      print(f"HAILING {ship_2_name}")
+    elif choice.lower() == ship_1_name.lower():
+      print(f"HAILING {ship_1_name}")
       time.sleep(1)
       print(".")
       time.sleep(1)
@@ -586,7 +608,7 @@ def option_comms():
       time.sleep(2)
       print("NO ANSWER")
       while True:
-        ret_choice = input("[RETURN]")
+        ret_choice = input("<RETURN>")
         if ret_choice == "":
           time.sleep(1)
           main_menu()
@@ -614,9 +636,9 @@ def hacker_shell():
   time.sleep(2)
   print("INTERRUPTING\n")
   time.sleep(2)
-  print("Í̴͍̊Ņ̶̆T̶̨̼̓Ĕ̸̟͘R̴̢͇͋R̸̳̃̅Ṷ̴̗̽̀P̷̞͎͌T̶͔͔̄̔Ȉ̶̺̆Ń̵̥G̴̼̣̽̕\n\n")
+  print("ł₦₮ɆⱤⱤɄ₱₮ł₦₲\n\n")
   time.sleep(3)
-  print("WELCOME TO THE SERVICE ENGIN̶E̶E̶R̶ INTERFACE\nAUTHO̷R̷I̷Z̷E̷D̷ PERSONNEL ONLY")
+  print("WELCOME TO THE SERVICE EN₲ł₦ɆE̶R̶ INTERFACE\nAUTHORłⱫɆĐ PERSONNEL ONLY")
   character_pool = (
   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  # Uppercase ASCII letters
   "abcdefghijklmnopqrstuvwxyz"  # Lowercase ASCII letters
@@ -636,8 +658,9 @@ def hacker_shell():
       print("""      
 REGISTER BAY 1 SHIP
 REGISTER BAY 2 SHIP
-CONTROLLER SHOWER OVERCLOCK
-CONTROLLER SHOWER REPAIR
+HYDROCONTROLLER SELFREPAIR
+HYDROCONTROLLER STATUS
+HYDROCONTROLLER OVERRIDE
 KEYCARD OVERRIDE
 REBOOT""")
     elif choice.lower() == "reboot":
@@ -678,9 +701,10 @@ REBOOT""")
     elif choice.lower() == "hydrocontroller selfrepair":
       print("\nDIAGNOSTICS ON HYDROCONTROLLERS:\n")
       for shower_id, state in config["showers"].items():
+        time.sleep(1)
         if state == ShowerState.BROKEN:
           print(f"SHOWER {shower_id} IN ERRORED STATE\nDIAGNOSING...")
-          time.sleep(2)
+          time.sleep(3)
           print("SELF REPAIR COMPLETE\n[NOTICE] ADDITIONAL PART REQUIRED. RECIPE SENT TO MFG UNIT\n")
           config["showers"][shower_id] = ShowerState.OFF
         else:
