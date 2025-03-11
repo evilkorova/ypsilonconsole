@@ -47,12 +47,16 @@ def shower_toggle(num):
     config["showers"][num] = ShowerState.ON
     time.sleep(2)
   elif config["showers"][num] == ShowerState.BROKEN:
-    time.sleep(1)
+    time.sleep(2)
     print("...")
-    time.sleep(12)
+    time.sleep(2)
     print("ERROR: NOTIFICATION LEVEL")
     print(f"SHOWER {num} NOT RESPONDING")
-    time.sleep(1)
+    while True:
+      ret_choice = input("<RETURN>")
+      if ret_choice == "":
+        time.sleep(1)
+
         
 
 # json saving
