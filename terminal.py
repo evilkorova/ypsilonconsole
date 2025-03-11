@@ -4,6 +4,7 @@ from enum import Enum
 import time
 import json
 import os
+import random
 
 # shower state class to account for broken
 class ShowerState(Enum):
@@ -55,25 +56,32 @@ def shower_toggle(num):
         
 
 # json saving
+def custom_serializer(obj):
+    if isinstance(obj, ShowerState):
+        return obj.name  # Save the enum as its name (e.g., "OFF", "BROKEN")
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
 def save_config_to_file(config, filename):
-  with open(filename, "w") as file:
-    json.dump(config, file, indent=4)
+    with open(filename, "w") as file:
+        json.dump(config, file, indent=2, default=custom_serializer)
 
 # usage:
 # save_config_to_file(config, "config.json")
 
 # json loading
-
 def load_config_from_file(filename, default_config):
   if os.path.exists(filename):
     with open(filename, "r") as file:
       config = json.load(file)
       # Convert shower states back to enum
-      for key, value in config["showers"].items():
-          config["showers"][key] = ShowerState(value)
+      config["showers"] = {
+        int(key): ShowerState[value]  # Convert string key to int, and value back to enum
+        for key, value in config["showers"].items()
+      }
       return config
   else:
     return default_config
+
 
 # load config if it exists, otherwise use default values supplied above.
 config = load_config_from_file("config.json", default_config)
@@ -128,6 +136,8 @@ def main_menu():
       "rock thrown did much damage. The rock flew well over the "
       "orcs head. You missed. \n\nYou died!")
     elif choice.lower() == 'run init 1337':
+      print("INITIALIZING SERVICE UPDATE")
+      time.sleep(1)
       hacker_shell()
     else:
       print ("INVALID COMMAND")
@@ -583,6 +593,131 @@ def option_comms():
       print ("INVALID COMMAND")
       time.sleep(1)
       option_comms()
+
+def hacker_shell():
+  global config
+  time.sleep(1)
+  print(".")
+  time.sleep(1)
+  print("ERROR")
+  time.sleep(2)
+  print("Ǝ⊥∀ᗡԀ∩ ƎƆIΛᴚƎS ⅁NIZI˥∀I⊥INI\n")
+  time.sleep(2)
+  print("ERROR\n")
+  time.sleep(2)
+  print("ᴚOᴚᴚƎ\n")
+  time.sleep(2)
+  print("乇尺尺ㄖ尺\n")
+  time.sleep(2)
+  print("INTERRUPTING\n")
+  time.sleep(2)
+  print("Í̴͍̊Ņ̶̆T̶̨̼̓Ĕ̸̟͘R̴̢͇͋R̸̳̃̅Ṷ̴̗̽̀P̷̞͎͌T̶͔͔̄̔Ȉ̶̺̆Ń̵̥G̴̼̣̽̕\n\n")
+  time.sleep(3)
+  print("WELCOME TO THE SERVICE ENGIN̶E̶E̶R̶ INTERFACE\nAUTHO̷R̷I̷Z̷E̷D̷ PERSONNEL ONLY")
+  character_pool = (
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  # Uppercase ASCII letters
+  "abcdefghijklmnopqrstuvwxyz"  # Lowercase ASCII letters
+  "0123456789"                  # Digits
+ # "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞß"
+ # "àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"
+  "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
+  "αβγδεζηθικλμνξοπρστυφχψω"
+  )
+  menu_completer = WordCompleter(['REBOOT', 'REGISTER BAY 1 SHIP', 'REGISTER BAY 2 SHIP', 'HYDROCONTROLLER SELFREPAIR', 'HYDROCONTROLLER STATUS', 'HYDROCONTROLLER OVERRIDE', 'KEYCARD OVERRIDE'], ignore_case=True)
+  while True:
+    random_characters = ''.join(random.choices(character_pool, k=5))
+    choice = prompt(f'{random_characters}> ', completer=menu_completer)
+    if choice == "?":
+      print("AVAILABLE COMMANDS")
+      time.sleep(1)
+      print("""      
+REGISTER BAY 1 SHIP
+REGISTER BAY 2 SHIP
+CONTROLLER SHOWER OVERCLOCK
+CONTROLLER SHOWER REPAIR
+KEYCARD OVERRIDE
+REBOOT""")
+    elif choice.lower() == "reboot":
+      bootup()
+    elif choice.lower() == "register bay 1 ship":
+      print("\nREGISTER NEW NAME FOR SHIP IN BAY 1")
+      while True:
+        bay_1_name = prompt(">>> ")
+        if bay_1_name:
+          config["dock_1_ship"] = bay_1_name.upper()
+          print(f"\nREGISTERED NEW NAME: {bay_1_name.upper()}")
+          break
+        else:
+          break
+    elif choice.lower() == "register bay 2 ship":
+      print("\nREGISTER NEW NAME FOR SHIP IN BAY 2")
+      while True:
+        bay_2_name = prompt(">>> ")
+        if bay_2_name:
+          config["dock_2_ship"] = bay_2_name.upper()
+          print(f"\nREGISTERED NEW NAME: {bay_2_name.upper()}")
+          break
+        else:
+          break
+    elif choice.lower() == "keycard override":
+      print("\n[NOTICE] USE OF THIS OVERRIDE IS FOR DIAGNOSTIC PURPOSES ONLY FOR SERVICE ENGINEERS\n")
+      while True:
+        yes_no_input = prompt("PROCEED? [Y/N] ")
+        if yes_no_input.upper() == "Y":
+          config["keycard_supplied"] = True
+          print("KEYCARD OVERRIDE ENABLED")
+          time.sleep(1)
+          print("\nPLEASE REBOOT FOR MENU")
+          time.sleep(1)
+          break
+        elif yes_no_input.upper() == "N":
+          break
+    elif choice.lower() == "hydrocontroller selfrepair":
+      print("\nDIAGNOSTICS ON HYDROCONTROLLERS:\n")
+      for shower_id, state in config["showers"].items():
+        if state == ShowerState.BROKEN:
+          print(f"SHOWER {shower_id} IN ERRORED STATE\nDIAGNOSING...")
+          time.sleep(2)
+          print("SELF REPAIR COMPLETE\n[NOTICE] ADDITIONAL PART REQUIRED. RECIPE SENT TO MFG UNIT\n")
+          config["showers"][shower_id] = ShowerState.OFF
+        else:
+          print(f"SHOWER {shower_id} OPERATION NORMAL")
+    elif choice.lower() == "hydrocontroller status":
+      print("\nHYDROCONTROLLER STATUS\n")
+      time.sleep(1)
+      for shower_id, state in config["showers"].items():
+        if state == ShowerState.ON:
+          print(f"SHOWER {shower_id} [> ON ]")
+        elif state == ShowerState.OFF:
+          print(f"SHOWER {shower_id} [> OFF]")
+        elif state == ShowerState.BROKEN:
+          print(f"SHOWER {shower_id} [ERROR]")
+    elif choice.lower() == "hydrocontroller override":
+      print("\n[NOTICE] USE THIS OVERRIDE TO TURN ALL HYDRO VALVES ON OR OFF\n")
+      while True:
+        on_off_input = prompt(" [ON/OFF/eXit] ")
+        if on_off_input.upper() == "ON":
+          for shower_id, state in config["showers"].items():
+            if state == ShowerState.BROKEN:
+              print(f"SHOWER {shower_id} IN ERRORED STATE\nSKIPPING...")
+              time.sleep(1)
+            else:
+              config["showers"][shower_id] = ShowerState.ON
+          break
+        elif on_off_input.upper() == "OFF":
+          for shower_id, state in config["showers"].items():
+            if state == ShowerState.BROKEN:
+              print(f"SHOWER {shower_id} IN ERRORED STATE\nSKIPPING...")
+              time.sleep(1)
+            else:
+              config["showers"][shower_id] = ShowerState.OFF
+          break
+        elif on_off_input.upper() == "X":
+          break
+      print("DONE\n")
+    elif choice.lower() == 'exit':
+      save_config_to_file(config, "config.json")
+      quit()
 
 if __name__ == '__main__':
   bootup()
