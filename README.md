@@ -3,20 +3,23 @@ A python-coded ypsilon 14 console, based on the Mothership module and Quadra's t
 
 Forked from tempest-creator.
 
+If you have managed to find this fork somehow, below is my changelog, notes, and instructions. I used a pi500 with a 7" screen running cool retro term as a prop in an in-person game. It looks pretty badass.
+
 evilkorova fork info:
 - rebuilt and restructured using prompt_toolkit, json, and enum libraries.
-- it will now autocomplete commands, which helps user know what to type (still has hidden commands)
+- user can tab-complete commands, which helps user navigate (still has hidden commands)
 - airlock and shower controls are now a toggle to reduce the amount of commands necessary
 - ships are now variables to easily change their names
-- showers can now be broken (5 defaults to broken)
-- upon exit it will save the configurations to a json file. 
+- showers can now have a broken state in addition to on/off (5 defaults to broken)
+- upon exit it will save the configurations to a json file which can be edited offline. 
 - upon boot again it will use the json file instead of the default config keys.
-- there is now a hacker shell (hidden menu) that GM (or a hacker player) can use to change ship names, fix showers, and backdoor into admin settings. (see below)
-- keycard control is now 2 factor (see below)
+- there is now a hacker shell (hidden menu) that the Warden (or a hacker player) can use to change ship names, fix showers, and backdoor into admin settings. (see below)
+- keycard control is now 2-factor in order to validate they actually have Sonya's keycard (see below)
 
 This is my version I made for my game, so there are some changes and departures that are preference only.
 
 Links:
+
 Based on: https://www.traaa.sh/the-ypsilon-14-terminal
 
 Original: https://github.com/tempest-creator/ypsilonconsole
@@ -31,7 +34,7 @@ Cool Retro Term to complete the look:  https://github.com/Swordfish90/cool-retro
 1. launch terminal.py (python3 terminal.py), preferably using cool-retro-term!
 
 # Sonya's keycard
-Access control for Sonya's keycard now has a second factor ("What you know") in addition to the keycard ("What you have"). The default is 2122 (the year Alien takes place.)  I would place it in an easily found location, possibly even written on the keycard or taped to the terminal itself. This is mainly just to make the program validate that the players did indeed find a keycard instead of just typing "insert keycard" or something. 
+Access control for Sonya's keycard now has a second factor ("What you know") in addition to the keycard ("What you have"). The default PIN is 2122 (the year Alien takes place.)  I would place the PIN in an easily found location, possibly even written on the keycard or taped to the terminal itself depending on how careless you want to make Sonya appear. This is mainly just to make the program validate that the players did indeed find a keycard and typing "INSERT KEYCARD" didn't feel very realistic to me.
 
 # Hacker shell
 Player 1: I'd like to try to hack the terminal.
