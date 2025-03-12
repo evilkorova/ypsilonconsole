@@ -130,9 +130,9 @@ def main_menu():
 > ROSTER
 > COMMS
 """)
-  menu_completer = WordCompleter(['DIAGNOSTICS', 'SCHEDULE', 'CONTROLS', 'ROSTER', 'COMMS'], ignore_case=True)
+  menu_completer = WordCompleter(['DIAGNOSTICS', 'SCHEDULE', 'CONTROLS', 'ROSTER', 'COMMS', 'THROW ROCK'], ignore_case=True)
   while True:
-    choice = prompt('>>> ', completer=menu_completer)
+    choice = prompt('>>> ', completer=menu_completer, complete_while_typing=False)
     if choice.lower() == 'exit':
       save_config_to_file(config, "config.json")
       quit()
@@ -167,7 +167,7 @@ def option_diagnostics():
 < BACK""")
   menu_completer = WordCompleter(['LAYOUT', 'STATUS', 'BACK'], ignore_case=True)
   while True:
-    choice = prompt('>>> ', completer=menu_completer)
+    choice = prompt('>>> ', completer=menu_completer, complete_while_typing=False)
     if choice.lower() == 'exit':
       break
     elif choice.lower() == 'layout':
@@ -293,7 +293,7 @@ def option_controls():
 < BACK""")
   menu_completer = WordCompleter(['AIRLOCKS', 'SHOWERS', 'SYSTEM', 'BACK'], ignore_case=True)
   while True:
-    choice = prompt('>>> ', completer=menu_completer)
+    choice = prompt('>>> ', completer=menu_completer, complete_while_typing=False)
     if choice.lower() == 'exit':
       break
     elif choice.lower() == 'airlocks':
@@ -328,7 +328,7 @@ def option_airlocks():
   print ("< BACK")
   menu_completer = WordCompleter(['DOCKING BAY 1', 'DOCKING BAY 2', 'MINESHAFT', 'BACK'], ignore_case=True)
   while True:
-    choice = prompt('>>> ', completer=menu_completer)
+    choice = prompt('>>> ', completer=menu_completer, complete_while_typing=False)
     if choice.lower() == 'exit':
       break
     if choice.lower() == 'docking bay 1':
@@ -397,7 +397,7 @@ def option_showers():
   print ("< BACK")
   menu_completer = WordCompleter(['BACK'], ignore_case=True)
   while True:
-    choice = prompt('>>> ', completer=menu_completer)
+    choice = prompt('>>> ', completer=menu_completer, complete_while_typing=False)
     if choice.lower() == 'exit':
       main_menu()
     if choice in ["1","2","3","4","5"]:
@@ -451,7 +451,7 @@ def option_system_a():
 < BACK""")
   menu_completer = WordCompleter(['LIFE SUPPORT', 'SCUTTLE', 'BACK'], ignore_case=True)
   while True:
-    choice = prompt('>>> ', completer=menu_completer)
+    choice = prompt('>>> ', completer=menu_completer, complete_while_typing=False)
     if choice.lower() == 'life support':
       option_lifesupport()
     elif choice.lower() == 'scuttle':
@@ -580,7 +580,7 @@ def option_comms():
   print("\n< BACK")
   menu_completer = WordCompleter([ship_1_name, ship_2_name, 'BACK'], ignore_case=True)
   while True:
-    choice = prompt('>>> ', completer=menu_completer)
+    choice = prompt('>>> ', completer=menu_completer, complete_while_typing=False)
     if choice.lower() == ship_2_name.lower():
       print(f"HAILING {ship_2_name}")
       time.sleep(1)
@@ -656,7 +656,7 @@ def hacker_shell():
   menu_completer = WordCompleter(['REBOOT', 'REGISTER BAY 1 SHIP', 'REGISTER BAY 2 SHIP', 'HYDROCONTROLLER SELFREPAIR', 'HYDROCONTROLLER STATUS', 'HYDROCONTROLLER OVERRIDE', 'KEYCARD OVERRIDE'], ignore_case=True)
   while True:
     random_characters = ''.join(random.choices(character_pool, k=5))
-    choice = prompt(f'{random_characters}> ', completer=menu_completer)
+    choice = prompt(f'{random_characters}> ', completer=menu_completer, complete_while_typing=False)
     if choice == "?":
       print("AVAILABLE COMMANDS")
       time.sleep(1)
