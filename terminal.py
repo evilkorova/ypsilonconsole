@@ -56,6 +56,7 @@ def shower_toggle(num):
       ret_choice = input("<RETURN>")
       if ret_choice == "":
         time.sleep(1)
+        break
 
         
 
